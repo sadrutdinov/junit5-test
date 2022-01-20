@@ -14,6 +14,7 @@ class UserServiceTest {
     @BeforeAll
     void init() {
         System.out.println("BeforeAll: " + this);
+        System.out.println();
     }
 
     private UserService userService;
@@ -28,7 +29,6 @@ class UserServiceTest {
     @Test
     void usersEmptyIfNoUsersAdded() {
         System.out.println("Test1: " + this);
-
         List<User> all = userService.getAll();
 
         assertTrue(all.isEmpty(), () -> "User list should be empty");
@@ -48,10 +48,12 @@ class UserServiceTest {
     @AfterEach
     void deleteDateFromDatabase() {
         System.out.println("AfterEach: " + this);
+        System.out.println();
     }
 
     @AfterAll
     void closeConnectionPool() {
+
         System.out.println("AfterAll: " + this);
     }
 
