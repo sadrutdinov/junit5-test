@@ -2,9 +2,9 @@ package com.sai.service;
 
 import com.sai.dto.User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class UserService {
 
@@ -15,8 +15,8 @@ public class UserService {
         return users;
     }
 
-    public boolean add(User user) {
-        return users.add(user);
+    public void add(User... users) {
+        this.users.addAll(Arrays.asList(users));
     }
 
     public Optional<User> login(String username, String password) {
@@ -25,5 +25,11 @@ public class UserService {
                 .filter(user -> user.getPassword().equals(password))
                 .filter(user -> user.getUsername().equals(username))
                 .findFirst();
+    }
+
+    public Map<Integer, User> getAllConvertedById() {
+        return users
+                .stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
     }
 }
