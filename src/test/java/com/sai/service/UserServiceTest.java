@@ -97,6 +97,7 @@ public class UserServiceTest {
 
     @Tag("login")
     @Nested
+    @DisplayName("test user login functionality")
     class LoginTest {
 
         @Test
