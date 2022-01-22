@@ -1,9 +1,7 @@
 package com.sai.service;
 
 import com.sai.dto.User;
-
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.collection.IsEmptyCollection;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.*;
 
@@ -12,9 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.collection.IsEmptyCollection.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) // создается один объект класса UserServiceTest для всех тестов
 // @TestInstance(TestInstance.Lifecycle.PER_METHOD) - создается объект для каждого теста, @BeforeAll и @AfterAll должны быть static
@@ -60,6 +57,14 @@ public class UserServiceTest {
 
         assertThat(users).hasSize(2);
 //        assertEquals(2, users.size());
+    }
+
+    @Test
+    void throwExceptionIfUsernameOrPasswordIsNull() {
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class, () -> userService.login(null, "dummy")),
+                () -> assertThrows(IllegalArgumentException.class, () -> userService.login("dummy", null))
+        );
     }
 
     @Test
