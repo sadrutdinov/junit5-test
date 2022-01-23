@@ -1,9 +1,11 @@
 package com.sai.service;
 
 import com.sai.dto.User;
+import com.sai.junit.resolver.UserServiceParamResolver;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) // создается один объект класса UserServiceTest для всех тестов
 // @TestInstance(TestInstance.Lifecycle.PER_METHOD) - создается объект для каждого теста, @BeforeAll и @AfterAll должны быть static
 @TestMethodOrder(MethodOrderer.DisplayName.class)
+@ExtendWith({
+        UserServiceParamResolver.class
+})
 public class UserServiceTest {
 
     @BeforeAll
@@ -27,14 +32,18 @@ public class UserServiceTest {
         System.out.println();
     }
 
+    public UserServiceTest(TestInfo testInfo) {
+        System.out.println();
+    }
+
     private UserService userService;
     private static final User IVAN = User.of(1, "Ivan", "123");
     private static final User PETR = User.of(2, "petr", "111");
 
     @BeforeEach
-    void prepare() {
+    void prepare(UserService userService) {
         System.out.println("BeforeEach: " + this);
-        userService = new UserService();
+        this.userService = userService;
     }
 
 
