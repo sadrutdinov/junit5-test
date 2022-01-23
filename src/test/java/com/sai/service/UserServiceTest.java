@@ -12,14 +12,17 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.RepeatedTest.LONG_DISPLAY_NAME;
 
 
 @Tag("fast")
@@ -117,17 +120,30 @@ public class UserServiceTest {
     class LoginTest {
 
         @Test
+        @Disabled("flaky, need to see")
         void loginFailIfPasswordIsNotCorrect() {
             userService.add(IVAN);
             Optional<User> maybeUser = userService.login(IVAN.getUsername(), "dummy");
             assertTrue(maybeUser.isEmpty());
         }
 
-        @Test
-        void loginFailIfUserDoesNotExist() {
+//        @Test
+        @RepeatedTest(value = 5, name = LONG_DISPLAY_NAME)
+        void loginFailIfUserDoesNotExist(RepetitionInfo repetitionInfo) {
             userService.add(IVAN);
             Optional<User> maybeUser = userService.login("dummy", IVAN.getPassword());
             assertTrue(maybeUser.isEmpty());
+        }
+
+        @Test
+        @Timeout(value = 200, unit = TimeUnit.MILLISECONDS)
+        void checkLoginFunctionalityPerformance() {
+            System.out.println(Thread.currentThread().getName());
+            Optional<User> user = assertTimeoutPreemptively(Duration.ofMillis(200L), () ->{
+                System.out.println(Thread.currentThread().getName());
+                return userService.login("dummy", IVAN.getPassword());
+            });
+
         }
 
         @Test
