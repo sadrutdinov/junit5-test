@@ -6,10 +6,16 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
@@ -38,7 +44,7 @@ public class UserServiceTest {
 
     private UserService userService;
     private static final User IVAN = User.of(1, "Ivan", "123");
-    private static final User PETR = User.of(2, "petr", "111");
+    private static final User PETR = User.of(2, "Petr", "111");
 
     @BeforeEach
     void prepare(UserService userService) {
@@ -104,6 +110,7 @@ public class UserServiceTest {
         System.out.println("AfterAll: " + this);
     }
 
+
     @Tag("login")
     @Nested
     @DisplayName("test user login functionality")
@@ -144,6 +151,43 @@ public class UserServiceTest {
 
         }
 
+
+        //        @ArgumentsSource()
+//        @NullSource
+//        @EmptySource
+//        @NullAndEmptySource
+//        @ValueSource(strings = {
+//                "Ivan", "Pert"
+//        })
+//        @EnumSource
+        @ParameterizedTest(name = "{arguments} test")
+        @MethodSource("com.sai.service.UserServiceTest#getArgumentsForLoginTest")
+//        @CsvFileSource(resources = "/login-test-data.csv", delimiter = ',', numLinesToSkip = 1)
+//        @CsvSource({
+//                "Ivan,123",
+//                "Petr,111",
+//        })
+
+        @DisplayName("login param test")
+        void loginParametrizedTest(String username, String password, Optional<User> user) {
+            userService.add(IVAN, PETR);
+
+            Optional<User> maybeUser = userService.login(username, password);
+
+            assertThat(maybeUser).isEqualTo(user);
+
+        }
+
+
+    }
+
+    static Stream<Arguments> getArgumentsForLoginTest() {
+        return Stream.of(
+                Arguments.of("Ivan", "123", Optional.of(IVAN)),
+                Arguments.of("Petr", "111", Optional.of(PETR)),
+                Arguments.of("Petr", "dummy", Optional.empty()),
+                Arguments.of("dummy", "123", Optional.empty())
+        );
     }
 
 }
