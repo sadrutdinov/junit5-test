@@ -1,5 +1,6 @@
 package com.sai.service;
 
+import com.sai.dao.UserDAO;
 import com.sai.dto.User;
 
 import java.util.*;
@@ -9,6 +10,16 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final List<User> users = new ArrayList<>();
+
+    private final UserDAO userDAO;
+
+    public UserService(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+    public boolean delete(Integer userId) {
+        return userDAO.delete(userId);
+    }
 
 
     public List<User> getAll() {

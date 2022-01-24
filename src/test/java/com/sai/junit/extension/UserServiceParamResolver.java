@@ -1,5 +1,6 @@
 package com.sai.junit.extension;
 
+import com.sai.dao.UserDAO;
 import com.sai.service.UserService;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -15,6 +16,6 @@ public class UserServiceParamResolver implements ParameterResolver {
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         ExtensionContext.Store store = extensionContext.getStore(ExtensionContext.Namespace.create(UserService.class));
-        return store.getOrComputeIfAbsent(UserService.class, it -> new UserService());
+        return store.getOrComputeIfAbsent(UserService.class, it -> new UserService(new UserDAO()));
     }
 }

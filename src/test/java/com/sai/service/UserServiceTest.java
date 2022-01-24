@@ -1,5 +1,6 @@
 package com.sai.service;
 
+import com.sai.dao.UserDAO;
 import com.sai.dto.User;
 import com.sai.junit.TestBase;
 import com.sai.junit.extension.*;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -36,7 +39,7 @@ import static org.junit.jupiter.api.RepeatedTest.LONG_DISPLAY_NAME;
 //        GlobalExtension.class
         PostProcessingExtension.class,
         ConditionalExtension.class,
-        ThrowableExtension.class
+//        ThrowableExtension.class
 })
 public class UserServiceTest extends TestBase {
 
@@ -51,13 +54,28 @@ public class UserServiceTest extends TestBase {
     }
 
     private UserService userService;
+    private UserDAO userDAO;
     private static final User IVAN = User.of(1, "Ivan", "123");
     private static final User PETR = User.of(2, "Petr", "111");
 
     @BeforeEach
-    void prepare(UserService userService) {
+    void prepare() {
         System.out.println("BeforeEach: " + this);
-        this.userService = userService;
+        this.userDAO = Mockito.mock(UserDAO.class);
+        this.userService = new UserService(userDAO);
+    }
+
+    @Test
+    void shouldDeleteExistedUser() {
+        userService.add(IVAN);
+//        Mockito.doReturn(true).when(userDAO).delete(IVAN.getId()); // stub
+//        Mockito.doReturn(false).when(userDAO).delete(Mockito.anyInt()); // stub
+
+        Mockito.when(userDAO.delete(IVAN.getId())).thenReturn(true);
+        boolean deleteResult = userService.delete(IVAN.getId());
+        System.out.println(userService.delete(IVAN.getId()));
+        System.out.println(userService.delete(IVAN.getId()));
+        assertThat(deleteResult).isTrue();
     }
 
 
