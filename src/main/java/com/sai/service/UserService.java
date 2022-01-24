@@ -18,6 +18,7 @@ public class UserService {
     }
 
     public boolean delete(Integer userId) {
+//        var userIdLocal = 25;
         return userDAO.delete(userId);
     }
 
