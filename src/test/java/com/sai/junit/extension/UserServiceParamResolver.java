@@ -1,4 +1,4 @@
-package com.sai.junit.resolver;
+package com.sai.junit.extension;
 
 import com.sai.service.UserService;
 import org.junit.jupiter.api.extension.ExtensionContext;

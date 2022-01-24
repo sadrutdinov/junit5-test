@@ -1,4 +1,4 @@
-package com.sai;
+package com.sai.junit;
 
 import com.sai.service.UserServiceTest;
 import org.junit.platform.engine.discovery.DiscoverySelectors;

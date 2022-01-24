@@ -1,17 +1,17 @@
 package com.sai.service;
 
 import com.sai.dto.User;
-import com.sai.junit.resolver.UserServiceParamResolver;
+import com.sai.junit.TestBase;
+import com.sai.junit.extension.*;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvFileSource;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +27,18 @@ import static org.junit.jupiter.api.RepeatedTest.LONG_DISPLAY_NAME;
 
 @Tag("fast")
 @Tag("user")
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) // создается один объект класса UserServiceTest для всех тестов
 // @TestInstance(TestInstance.Lifecycle.PER_METHOD) - создается объект для каждого теста, @BeforeAll и @AfterAll должны быть static
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 @ExtendWith({
-        UserServiceParamResolver.class
+        UserServiceParamResolver.class,
+//        GlobalExtension.class
+        PostProcessingExtension.class,
+        ConditionalExtension.class,
+        ThrowableExtension.class
 })
-public class UserServiceTest {
+public class UserServiceTest extends TestBase {
 
     @BeforeAll
     void init() {
@@ -59,7 +64,10 @@ public class UserServiceTest {
     @Test
     @Order(1)
     @DisplayName("users will be empty if no  users added")
-    void usersEmptyIfNoUsersAdded() {
+    void usersEmptyIfNoUsersAdded() throws IOException {
+        if (true) {
+            throw new RuntimeException();
+        }
         System.out.println("Test1: " + this);
         List<User> users = userService.getAll();
         assertThat(users).isEmpty();
